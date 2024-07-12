@@ -1,0 +1,39 @@
+name: CI tests
+
+on:
+  push: # Runs on pushes targeting the master branch
+    branches:
+      - main
+  workflow_call: # called on version update detected
+  workflow_dispatch: # can be manually dispatched under GitHub's "Actions" tab 
+
+jobs:
+  tests:
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        node:
+          - 20
+          - 18
+    steps:
+      - name: npm ci
+        run: docker run -v "${GITHUB_WORKSPACE}:/src" -w /src "node:${{matrix.node}}" npm ci
+
+      - name: npm test
+        run: docker run -v "${GITHUB_WORKSPACE}:/src" -w /src "node:${{matrix.node}}" npm test
+
+      - name: check lint
+        run: docker run -v "${GITHUB_WORKSPACE}:/src" -w /src "node:${{matrix.node}}" npm run test-lint
+
+  package:
+    runs-on: ubuntu-24.04
+    needs:
+      - tests
+    steps:
+      - name: npm pack
+        run: npm pack
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: node-package
+          path: azu-npm-github-package-example-*.tgz

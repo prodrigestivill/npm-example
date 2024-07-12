@@ -34,6 +34,7 @@
     "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\"",
     "prepublish": "npm run --if-present build",
     "test": "mocha \"test/**/*.ts\"",
+    "test-lint": "prettier --check \"**/*.{js,jsx,ts,tsx,css}\"",
     "watch": "tsc -p . --watch"
   },
   "husky": {
