@@ -15,19 +15,19 @@ jobs:
         node:
           - 20
           - 18
+    container:
+      image: "node:${{matrix.node}}"
     steps:
       - name: checkout
         uses: actions/checkout@v4
 
-      - name: npm ci
-        run: docker run -v "${GITHUB_WORKSPACE}:/src" -w /src "node:${{matrix.node}}" npm ci
+      - run: npm ci
 
       - name: check lint
         continue-on-error: true
-        run: docker run -v "${GITHUB_WORKSPACE}:/src" -w /src "node:${{matrix.node}}" npm run test-lint
+        run: npm run test-lint
 
-      - name: npm test
-        run: docker run -v "${GITHUB_WORKSPACE}:/src" -w /src "node:${{matrix.node}}" npm test
+      - run: npm test
 
   package:
     runs-on: ubuntu-24.04
@@ -36,8 +36,7 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v4
-      - name: npm pack
-        run: npm pack
+      - run: npm pack
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
