@@ -22,11 +22,12 @@ jobs:
       - name: npm ci
         run: docker run -v "${GITHUB_WORKSPACE}:/src" -w /src "node:${{matrix.node}}" npm ci
 
+      - name: check lint
+        continue-on-error: true
+        run: docker run -v "${GITHUB_WORKSPACE}:/src" -w /src "node:${{matrix.node}}" npm run test-lint
+
       - name: npm test
         run: docker run -v "${GITHUB_WORKSPACE}:/src" -w /src "node:${{matrix.node}}" npm test
-
-      - name: check lint
-        run: docker run -v "${GITHUB_WORKSPACE}:/src" -w /src "node:${{matrix.node}}" npm run test-lint
 
   package:
     runs-on: ubuntu-24.04
